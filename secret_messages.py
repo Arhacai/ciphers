@@ -1,9 +1,40 @@
 import os
+import random
+import string
+import time
 
 
 def clear_screen():
     """Clear the screen to prepare it to show the menu."""
     os.system('cls' if os.name == 'nt' else 'clear')
+
+
+class VisualDecoder:
+    LETTERS = string.ascii_uppercase + " !$%&?¿¡@#"
+    start = 0
+
+    def __init__(self, text1, text2):
+        self.text1 = list(text1)
+        self.text2 = list(text2)
+
+    def suffle(self,):
+        for index in range(self.start, len(self.text1)):
+            self.text1[index] = random.choice(self.LETTERS)
+
+    def transform(self):
+        self.suffle()
+        if self.text1[self.start] == self.text2[self.start]:
+            self.start += 1
+        print(''.join(self.text1))
+        time.sleep(0.02)
+
+    def run(self):
+        while self.text1 != self.text2:
+            clear_screen()
+            self.transform()
+        clear_screen()
+        print("You're decoded message is: ")
+        print(''.join(self.text1))
 
 
 def show_menu():
@@ -92,7 +123,10 @@ def show_message(cipher, option, message):
     prints the encoded/decoded message on screen
     """
     result = getattr(cipher, option)(message)
-    print("\nYour {}d message is: {}".format(option, result))
+    if option == 'decode':
+        VisualDecoder(message, result).run()
+    else:
+        print("\nYour {}d message is: {}".format(option, result))
 
 
 def cipher_again():
